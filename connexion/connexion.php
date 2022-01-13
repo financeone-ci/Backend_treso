@@ -1,10 +1,9 @@
 <?php
  header('Content-Type: application/json; charset=utf8');
- header('Access-Control-Allow-origin: *');
-header('Access-Control-Allow-Headers: *'); 
+//  header("Access-Control-Allow-origin: {$_SERVER['HTTP_ORIGIN']}");
+ header("Access-Control-Allow-origin: *");
+ header('Access-Control-Allow-Headers: *'); 
 //header('Content-Type: multipart/form-data');
-
-
 
 		try {
 			$dns = 'mysql:host=localhost; dbname=treso_app';

@@ -14,12 +14,11 @@ function secure($chaine){
 
 function audit_sys ($tval= array('tid' => "",'tnom' => "",'tip' => "",'tmachine' => "",'taction' => "",'tdescription' => "",'tissue' => "",'toldValue' => "",'tnewValue' => "",), $tabNewVal =[] , $jeton = "")
 {$key='08101783738219be049b80b50a8a7d22ec9a2b02255bac14b6242ac58f738ed3';
-    if(!empty($jeton)){
+    if(isset($jeton) && !empty($jeton)){
         $decoded = JWT::decode($jeton, $key, array('HS256'));
         $tval['tnom']  = $decoded->user_nom.' '.$decoded->user_prenom;
         $tval['tid']  = $decoded->user_id;
     }
-    
     
    $tval['tnewValue']  = implode(",", $tabNewVal);
    
@@ -92,6 +91,30 @@ function useBdd(string $type, array $donnees=[]){
     return $resultat;
 }
 
+// Vérifier la validité du token**********************************************************************************
+function ChekToken($jeton)
+{
+    $tok = false;
+    $key='08101783738219be049b80b50a8a7d22ec9a2b02255bac14b6242ac58f738ed3';
+    if(isset($jeton) && !empty($jeton)){
+        $decoded = JWT::decode($jeton, $key, array('HS256'));
+        if($decoded){
+            $tok = true;
+        }
+    }
+    return $tok;
+}
 
-
-?>
+// Récupérer les informations du token**************************************************************************
+function tokenData($jeton)
+{
+    $data = '';
+    $key='08101783738219be049b80b50a8a7d22ec9a2b02255bac14b6242ac58f738ed3';
+    if(isset($jeton) && !empty($jeton)){
+        $decoded = JWT::decode($jeton, $key, array('HS256'));
+        if($decoded){
+            $data = $decoded;
+        }
+    }
+    return $data;
+}

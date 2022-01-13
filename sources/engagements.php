@@ -174,8 +174,6 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
 
             if(isset($_GET['paie'])){
                 try{
-                     
- 
                     $sql = "SELECT `ID_ENGAGEMENT` AS id,`NUM_ENGAGEMENT`,`BENEFICIAIRE`,`REF_BENEFICIAIRE`, 
                     engagement.`MONTANT`,  `NUM_BON`,`MOTIF`,`TYPE_IMPORT`,`USER_IMPORT`,`DATE_ECHEANCE`,`ID_STATUT_ENGAGEMENT`,`CODE_BUDGET`,`DATE_IMPORTATION`,`IDIMPORT`,`DATE_ENGAGEMENT`,`REF_MARCHE`,`RETENUE`,`TAXE` FROM `engagement` LEFT JOIN `engagement_paiement` ON engagement.ID_ENGAGEMENT = engagement_paiement.IDENGAGEMENT GROUP BY ID_ENGAGEMENT
                     ORDER BY DATE_ENGAGEMENT, DATE_IMPORTATION DESC ";
