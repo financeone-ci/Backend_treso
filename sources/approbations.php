@@ -108,5 +108,5 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
 }
 
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
-
+/* git */
 ?>
