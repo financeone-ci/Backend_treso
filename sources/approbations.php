@@ -106,7 +106,6 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
         "message" => "paramètres incorrects",
     ];
 }
-
+/*8*/
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
-
 ?>
