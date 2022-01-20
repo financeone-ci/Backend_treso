@@ -19,7 +19,6 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
             'tdesc' => secure($obj->desciption),
             'trepre' => secure($obj->representant),
             'tlocal' => secure($obj->localisation),
-            'tsoci' => secure($obj->societe),
         );
         try{
             $req = $DB->prepare("INSERT INTO sites VALUES(:tcode, :tdesc, :trepre, :tlocal, :tsoci)");

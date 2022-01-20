@@ -40,6 +40,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                     'tprofil' => $profil,
                     'ttel' => $tel,
                      'tpwd' => sha1("user"),
+                    //  'tpwd' => password_hash("user", PASSWORD_DEFAULT),
                     ///////////// 
                 );
                
@@ -117,12 +118,12 @@ $tnew = array( // tableau des nouvelles valeurs
             }
             break;
         case 'R':
-            if(isset($_GET['read_all'])){
+            if(isset($_GET['read_all']))
+            {
                 try{
                     $sql = "SELECT `user_id` as id,`user_login`,`user_email`,`user_tel`,`user_role`,`profil_libelle`, profil.profil_id as id_profil, user_nom, user_prenom, user_actif FROM `user` JOIN profil ON user.profil_id = profil.profil_id ORDER BY user_login";
                     $req = $DB->query($sql);
                     $row_user = $req->fetchAll(PDO::FETCH_OBJ);
-
                     
                     $infoHttp = [
                         "reponse" => "success",
@@ -130,20 +131,22 @@ $tnew = array( // tableau des nouvelles valeurs
                     ];
                 }catch (PDOException $e)
                 {
-  
                     $infoHttp = [
                         "reponse" => "error",
-                        "message" => "Connexion aux données impossible, veuillez vérifier votre connexion.",
+                        "message" => "Connexion impossible",
                     ];
                 }
             }else
             // connexion des utilisateurs
-            if(isset($obj->user) && !empty($obj->user) && isset($obj->pwd) && !empty($obj->pwd)){
-                $pwd = sha1( secure($obj->pwd));
+            if(isset($obj->user) && !empty($obj->user) && isset($obj->pwd) && !empty($obj->pwd))
+            {
+                $pwd = sha1(secure($obj->pwd));
+                // $pwd = password_verify(secure($obj->pwd), PASSWORD_DEFAULT);
                 $user = secure($obj->user);
                 try{
-                    $sql = "SELECT *
+                    $sql = "SELECT user_id, user_login, user_nom, user_prenom, user_email, user_tel, id_societe, user_role
                             FROM user
+                                 JOIN profil ON user.profil_id = profil.profil_id
                             WHERE user_login = '$user' AND user_pwd = '$pwd'";
                     $req = $DB->query($sql);
                     $count = $req->rowCount();
@@ -156,6 +159,7 @@ $tnew = array( // tableau des nouvelles valeurs
                             'user_prenom' => $d['user_prenom'],
                             'user_email' => $d['user_email'],
                             'user_tel' => $d['user_tel'],
+                            'user_societe' => $d['id_societe'],
                             'user_role' => $d['user_role'],
                             'issued_at' => date('Y-m-d H:i:s'),
                             'exp' => time()+54000000,
@@ -182,16 +186,16 @@ $tnew = array( // tableau des nouvelles valeurs
                         $menu = $req2->fetchAll(PDO::FETCH_OBJ);
 
                          // MAJ Audit
-              $ip = $_SERVER['REMOTE_ADDR'];
-             $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-      $t2 = array(
-              'tid' => $d['user_id'],
-              'tnom' => $d['user_nom'].' '.$d['user_prenom'],
-              'tip' => $ip,
-              'tmachine' => $machine,
+                        $ip = $_SERVER['REMOTE_ADDR'];
+                        $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+                        $t2 = array(
+                            'tid' => $d['user_id'],
+                            'tnom' => $d['user_nom'].' '.$d['user_prenom'],
+                            'tip' => $ip,
+                            'tmachine' => $machine,
                         );
-     $req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`) VALUES (:tid, :tnom, :tip, :tmachine, 'in')");
-     $req2->execute($t2);
+                        $req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`) VALUES (:tid, :tnom, :tip, :tmachine, 'in')");
+                        $req2->execute($t2);
 
                         // Génération du jeton JWT
                         $jwt = getToken($key, $payload);
@@ -203,44 +207,42 @@ $tnew = array( // tableau des nouvelles valeurs
                             "newConnexion" => $newConnexion,
                         ];
                     }else{
-        // MAJ Audit
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-        $t2 = array(
-         'tid' => "Undefined",
-         'tnom' => $obj->user,
-         'tip' => $ip,
-         'tmachine' => $machine,
-                   );
-$req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`, `audit_cnx_issue`, audit_cnx_description) VALUES (:tid, :tnom, :tip, :tmachine, 'in', 0, 'Paramètres de connexion incorrects')");
-$req2->execute($t2);
+                        // MAJ Audit
+                        $ip = $_SERVER['REMOTE_ADDR'];
+                        $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+                        $t2 = array(
+                            'tid' => "Undefined",
+                            'tnom' => $obj->user,
+                            'tip' => $ip,
+                            'tmachine' => $machine,
+                        );
+                        $req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`, `audit_cnx_issue`, audit_cnx_description) VALUES (:tid, :tnom, :tip, :tmachine, 'in', 0, 'Paramètres de connexion incorrects')");
+                        $req2->execute($t2);
 
-                   
                         $infoHttp = [
                             "reponse" => "error",
                             "message" => "Paramètres de connexion incorrects",
                             "jeton" => false,
                         ];
                     }
-                }catch (PDOException $e)
-                {
+                }catch (PDOException $e){
                      // MAJ Audit
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-        $t2 = array(
-         'tid' => "Undefined",
-         'tnom' => $obj->user,
-         'tip' => $ip,
-         'tmachine' => $machine,
-                   );
-$req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`, `audit_cnx_issue`, audit_cnx_description) VALUES (:tid, :tnom, :tip, :tmachine, 'in', 0, '".$e."')");
-$req2->execute($t2);
-$infoHttp = [
+                    $ip = $_SERVER['REMOTE_ADDR'];
+                    $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+                    $t2 = array(
+                        'tid' => "Undefined",
+                        'tnom' => $obj->user,
+                        'tip' => $ip,
+                        'tmachine' => $machine,
+                    );
+                    $req2 = $DB->prepare("INSERT INTO `audit_cnx` (`audit_cnx_userid`, `audit_cnx_usernom`, `audit_cnx_ip`, `audit_cnx_machine`, `audit_cnx_action`, `audit_cnx_issue`, audit_cnx_description) VALUES (:tid, :tnom, :tip, :tmachine, 'in', 0, '".$e."')");
+                    $req2->execute($t2);
+
+                    $infoHttp = [
                         "reponse" => "error",
                         "message" => "Connexion aux données impossible, veuillez vérifier votre connexion.",
                         "jeton" => false,
                     ];
-                 
                 }
             }else{
                 $infoHttp = [
@@ -248,7 +250,6 @@ $infoHttp = [
                     "message" => "Paramètres de connexion incorrects",
                     "jeton" => false,
                 ];
-                
             }
             break;
         case 'U': // MAJ
