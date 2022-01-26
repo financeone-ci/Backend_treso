@@ -1,31 +1,35 @@
 <?php
 // Création de site**************************
-
 require_once '../../connexion/connexion.php';
 require_once '../../fonctions/secure.php';
 require_once '../../fonctions/getToken.php';
 
 $obj = json_decode(file_get_contents('php://input'));
-
+$obj = $obj->values;
 $infoHttp = array();
 $header = apache_request_headers();
 
 if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true)
 {
+    $jeton = $header['Authorization'];
+    $payload = tokenData($jeton);
+    $societe = $payload->user_societe;
+
     if(isset($obj) && !empty($obj))
     {
         $t = array(
             'tcode' => secure($obj->code),
-            'tdesc' => secure($obj->desciption),
+            'tdesc' => secure($obj->description),
             'trepre' => secure($obj->representant),
-            'tlocal' => secure($obj->localisation),
+            'tlocal' => secure($obj->local),
+            'tsociete' => secure($societe),
         );
         try{
-            $req = $DB->prepare("INSERT INTO sites VALUES(:tcode, :tdesc, :trepre, :tlocal, :tsoci)");
+            $req = $DB->prepare("INSERT INTO sites(CODE_SITE, DESCRIPTION_SITE, REPRESENTANT_SITE, LOCALISATION_SITE, ID_SOCIETE) VALUES(:tcode, :tdesc, :trepre, :tlocal, :tsociete)");
             $req->execute($t);
             $infoHttp = [
                 "reponse" => "success",
-                "message" => "Enregistré",
+                "message" => "Enregistré avec succès",
             ]; 
         } catch (PDOException $e) {
             //throw $th;
@@ -48,13 +52,13 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
     }else{
         $infoHttp = [
             "reponse" => "error",
-            "message" => "Impossible de lire les données",
+            "message" => "paramètres incorrects",
         ]; 
     }
 }else{
     $infoHttp = [
         "reponse" => "error",
-        "message" => "Accès refusé.",
+        "message" => "Accès refusé",
     ]; 
 }
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
