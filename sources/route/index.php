@@ -13,7 +13,7 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
     */
     
       
-        $sql = "SELECT * FROM `route`";
+        $sql = "SELECT * FROM `route` ";
     // Lecture de tous les sites
     
     $req = $DB->query($sql);

@@ -160,7 +160,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                     'tcent' => $cent,
                     'tsigle' => $sigle,
                 );
-                
+                 
                 $req1 = $DB->prepare("UPDATE `devise` SET `CODE_DEVISE` = :tcode, `LIBELLE_DEVISE` = :tlibelle, `TAUX_DEVISE` = :ttaux, `DEVISE_DE_BASE` = :tbase, `LIBELLE_CENTIMES` = :tcent, `SIGLE_DEVISE` = :tsigle WHERE `devise`.`IDDEVISE` = :tid; 
                 ");
                 if($req1->execute($t1)){
