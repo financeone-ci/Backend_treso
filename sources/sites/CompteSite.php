@@ -9,6 +9,7 @@ $header = apache_request_headers();
 
 if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true)
 {
+    // Récupération de la société
     $jeton = $header['Authorization'];
     $payload = tokenData($jeton);
     $societe = $payload->user_societe;
