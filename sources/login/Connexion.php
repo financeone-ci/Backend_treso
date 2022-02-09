@@ -45,10 +45,10 @@ if(isset($obj) && !empty($obj))
         // Récupérer les informations liées au droits de l'utilisateur
         $sql1 = "SELECT e_smenu_libelle, droits.e_smenu_id as esmenu_id, profil_libelle, e_smenu_lien, droits_lecture, droits_creer, droits_modifier, droits_supprimer, menu.menu_id as idmenu, smenu.smenu_id as idsmenu, smenu_libelle, menu_libelle
                 FROM e_smenu JOIN droits ON e_smenu.e_smenu_id = droits.e_smenu_id
-                                JOIN profil ON droits.profil_id = profil.profil_id
-                                JOIN user ON profil.profil_id = user.profil_id
-                                JOIN smenu ON e_smenu.smenu_id = smenu.smenu_id
-                                JOIN menu ON smenu.menu_id = menu.menu_id
+                            JOIN profil ON droits.profil_id = profil.profil_id
+                            JOIN user ON profil.profil_id = user.profil_id
+                            JOIN smenu ON e_smenu.smenu_id = smenu.smenu_id
+                            JOIN menu ON smenu.menu_id = menu.menu_id
                 WHERE user_id = '$iduser' AND droits.droits_lecture = 1";
         $req1 = $DB->query($sql1);
         $droit = $req1->fetchAll(PDO::FETCH_OBJ);

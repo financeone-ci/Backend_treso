@@ -28,6 +28,10 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
                 );
                 $req = $DB->prepare("INSERT INTO site_compte(ID_COMPTE, ID_SITE) values(:compte, :site)");
                 $req->execute($t);
+                
+                //Audits
+                // AuditSystem();
+
                 break;
             case 1:
                 # Cas de suppression d'utilisateur au site
@@ -36,6 +40,10 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
                     'site' => $site,
                 );
                 $req = $DB->prepare("DELETE FROM site_compte WHERE ID_COMPTE = :compte AND ID_SITE = :site");
+
+                //Audits
+                // AuditSystem();
+
                 $req->execute($t);
                 break;
             default:

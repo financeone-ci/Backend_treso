@@ -13,5 +13,34 @@ $t = array(
     'tbase' => 'base_devise',
 );
 $req =  "INSERT INTO `devise` (`CODE_DEVISE`, `LIBELLE_DEVISE`, `TAUX_DEVISE`, `DEVISE_DE_BASE`) VALUES ( :tcode, :tlibelle, :ttaux, :tbase);" ;
-$reponse = apiCreator($DB, $req, "create", $t);
-echo $reponse;
+$response = apiCreator($DB, $req, "create", $t);
+
+// Audits
+$issue = json_decode($response);
+if($issue->data)
+{
+    $data = $issue->data;
+    if($issue->reponse === "error")
+    {
+        // $data = implode(" :: ", $data);
+        $implode = "";
+        foreach ($data as $key => $value) {
+            # code...
+            $implode .= $key.': '.$value.' ';
+        }
+        $data = $implode;
+        AuditSystem($DB, $issue->payload->user_login, "Création site", "Création de nouveau site", "échec", $issue->payload->item_id, $data, $issue->payload->user_id, $issue->payload->user_societe);
+    }
+    if($issue->reponse === "success")
+    {
+        $implode = "";
+        foreach ($data as $key => $value) {
+            # code...
+            $implode .= $key.': '.$value.' / ';
+        }
+        $data = $implode;
+        AuditSystem($DB, $issue->payload->user_login, "Création site", "Création de nouveau site", "succès", $issue->payload->item_id, $data, $issue->payload->user_id, $issue->payload->user_societe);
+    }
+} 
+
+echo $response;

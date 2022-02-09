@@ -1,5 +1,8 @@
 <?php
 // ************************************ Declarations
+require_once 'AuditSys.php';
+require_once 'AuditCnx.php';
+
 $ip = $_SERVER['REMOTE_ADDR'];
 $machine = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 

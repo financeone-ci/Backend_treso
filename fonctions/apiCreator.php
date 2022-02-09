@@ -12,7 +12,6 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
     } 
     
     if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true){
-
         // Récupération de la société
         $jeton = $header['Authorization'];
         $payload = tokenData($jeton);
@@ -27,6 +26,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                     $infoHttp = [
                         "reponse" => "error",
                         "message" => "Champ $value inconnu",
+                        "payload" => $payload,
                     ]; 
                 return json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
                 }
@@ -45,6 +45,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
             $infoHttp = [
                 "reponse" => "success",
                 "infos" => $data,
+                "payload" => $payload,
             ]; 
         }
         else{
@@ -60,6 +61,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                         $infoHttp = [
                             "reponse" => "error",
                             "message" => "Paramètres incorrects",
+                            "payload" => $payload,
                         ]; 
                         return json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
                     }
@@ -73,18 +75,27 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                         $infoHttp = [
                             "reponse" => "error",
                             "message" => "Paramètres incorrects",
+                            "payload" => $payload,
                         ]; 
                         return json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
                     }
                 }
             }
-        // traitement création, mise à jour , suppression //
+            $tdata = $donneesSecurisees;
+            // traitement création, mise à jour , suppression //
             try{
                 $req = $DB->prepare($requete);
                 $req->execute($donneesSecurisees);
+                if($type == "update" OR  $type == "delete" ){
+                    $payload->item_id = strval($donneesSecurisees['tid']);
+                }else{
+                    $payload->item_id = strval($DB->lastInsertId());
+                }
                 $infoHttp = [
                     "reponse" => "success",
                     "message" => $msg,
+                    "payload" => $payload,
+                    "data" => $tdata,
                 ]; 
             }catch (PDOException $e) {
                 //throw $th;
@@ -95,11 +106,15 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                         $infoHttp = [
                             "reponse" => "error",
                             "message" => "Code déjà utilisé",
+                            "payload" => $payload,
+                            "data" => $tdata,
                         ];
                     }else{
                         $infoHttp = [
                             "reponse" => "error",
                             "message" => "Suppression impossible",
+                            "payload" => $payload,
+                            "data" => $tdata,
                         ];
                     }
                 } else {
@@ -107,6 +122,8 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                     $infoHttp = [
                         "reponse" => "error",
                         "message" => "Service indisponible",
+                        "payload" => $payload,
+                        "data" => $tdata,
                     ];
                 }
             }
@@ -114,7 +131,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
     }else{
         $infoHttp = [
             "reponse" => "error",
-            "message" => "Accès refusé.",
+            "message" => "Accès refusé",
         ]; 
     }
    return json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
