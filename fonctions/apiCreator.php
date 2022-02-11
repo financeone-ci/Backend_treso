@@ -121,7 +121,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                     // an error other than duplicate entry occurred
                     $infoHttp = [
                         "reponse" => "error",
-                        "message" => "Service indisponible",
+                        "message" => $e->getMessage(),
                         "payload" => $payload,
                         "data" => $tdata,
                     ];

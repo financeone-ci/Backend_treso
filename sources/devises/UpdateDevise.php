@@ -14,6 +14,9 @@ $t = array(
     'tbase' => 'base_devise',
 );
 $sql = "UPDATE `devise` SET `CODE_DEVISE` = :tcode, `LIBELLE_DEVISE` = :tlibelle, `TAUX_DEVISE` = :ttaux, `DEVISE_DE_BASE` = :tbase  WHERE `devise`.`IDDEVISE` = :tid;";
-$reponse = apiCreator($DB, $sql, "update", $t);
+$response = apiCreator($DB, $sql, "update", $t, false);
+// Audits
+AuditSystem($DB, "Modification devise", "Modification de devise ", $response);
 
-echo $reponse;
+
+echo $response;

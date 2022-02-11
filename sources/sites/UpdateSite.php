@@ -17,31 +17,6 @@ $sql = "UPDATE sites
 $response = apiCreator($DB, $sql, "update", $t, false);
 
 // Audits
-$issue = json_decode($response);
-if($issue->data)
-{
-    $data = $issue->data;
-    if($issue->reponse === "error")
-    {
-        // $data = implode(" :: ", $data);
-        $implode = "";
-        foreach ($data as $key => $value) {
-            # code...
-            $implode .= $key.': '.$value.' ';
-        }
-        $data = $implode;
-        AuditSystem($DB, $issue->payload->user_login, "Mise à jour site", "Mise à jour de nouveau site", "échec", $issue->payload->item_id, $data, $issue->payload->user_id, $issue->payload->user_societe);
-    }
-    if($issue->reponse === "success")
-    {
-        $implode = "";
-        foreach ($data as $key => $value) {
-            # code...
-            $implode .= $key.': '.$value.' / ';
-        }
-        $data = $implode;
-        AuditSystem($DB, $issue->payload->user_login, "Mise à jour site", "Mise à jour de nouveau site", "succès", $issue->payload->item_id, $data, $issue->payload->user_id, $issue->payload->user_societe);
-    }
-} 
+AuditSystem($DB, "Mise à jour site", "Mise à jour de  site", $response);
 
 echo $response;
