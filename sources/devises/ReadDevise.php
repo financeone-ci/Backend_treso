@@ -18,5 +18,5 @@ if(isset($_GET['id']) && !empty($_GET['id']))
     $sql = "SELECT `IDDEVISE` As id,`CODE_DEVISE`,`LIBELLE_DEVISE`,`TAUX_DEVISE`,`DEVISE_DE_BASE`,`LIBELLE_CENTIMES`,`SIGLE_DEVISE` FROM `devise` ";  
 }
 // reponse de l'API
-$reponse = apiCreator($DB, $sql);
+$reponse = apiCreator($DB, $sql,"read",[], false);
 echo $reponse;

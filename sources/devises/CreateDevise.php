@@ -15,6 +15,6 @@ $t = array(
 $req =  "INSERT INTO `devise` (`CODE_DEVISE`, `LIBELLE_DEVISE`, `TAUX_DEVISE`, `DEVISE_DE_BASE`) VALUES ( :tcode, :tlibelle, :ttaux, :tbase);" ;
 $response = apiCreator($DB, $req, "create", $t, false);
 // Audits
-AuditSystem($DB, "Création devise", "Création de nouvelle devise",  $response);
+AuditSystem($DB, "Création", "Création de nouvelle devise",  $response);
 
 echo $response;
