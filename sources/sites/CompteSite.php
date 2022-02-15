@@ -57,4 +57,5 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
         "message" => "Accès refusé",
     ]; 
 }
+
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);

@@ -98,7 +98,11 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                     "data" => $tdata,
                 ]; 
             }catch (PDOException $e) {
-                //throw $th;
+                if($type == "update" OR  $type == "delete" ){
+                    $payload->item_id = strval($donneesSecurisees['tid']);
+                }else{
+                    $payload->item_id = '0';
+                }
                 $MYSQL_DUPLICATE_CODES=array(1062, 23000);
                 if (in_array($e->getCode(),$MYSQL_DUPLICATE_CODES)) {
                     // doublon
