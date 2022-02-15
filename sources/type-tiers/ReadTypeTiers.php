@@ -11,12 +11,11 @@ require_once '../../fonctions/getToken.php';
 if(isset($_GET['id']) && !empty($_GET['id']))
 {
     $id = secure($_GET['id']);
-    $sql = "SELECT `IDDEVISE` As id,`CODE_DEVISE`,`LIBELLE_DEVISE`,`TAUX_DEVISE`,`DEVISE_DE_BASE`,`LIBELLE_CENTIMES`,`SIGLE_DEVISE` FROM `devise`  
-    WHERE IDDEVISE = '$id'";
+    $sql = "SELECT `ID_TYPE_TIERS` AS id, `LIBELLE_TYPE_TIERS`, `CODE_TYPE_TIERS`, `ID_SOCIETE` FROM `type_tiers` WHERE  ID_TYPE_TIERS = '$id'";
 // Lecture de tous les sites
 }else{
-    $sql = "SELECT `IDDEVISE` As id,`CODE_DEVISE`,`LIBELLE_DEVISE`,`TAUX_DEVISE`,`DEVISE_DE_BASE`,`LIBELLE_CENTIMES`,`SIGLE_DEVISE` FROM `devise` ";  
+    $sql = "SELECT `ID_TYPE_TIERS` AS id, `LIBELLE_TYPE_TIERS`, `CODE_TYPE_TIERS`, `ID_SOCIETE` FROM `type_tiers` ";  
 }
 // reponse de l'API
-$reponse = apiCreator($DB, $sql,"read",[], false);
+$reponse = apiCreator($DB, $sql);
 echo $reponse;

@@ -8,18 +8,18 @@ require_once '../../fonctions/apiCreator.php'; // créateur d'API
 // modifier dans la BDD
 $t = array(
     'tcode' => 'code',
-    'tlibelle' => 'libelle',
+    'tdescription' => 'description',
     'tcomplement' => 'complement',
     'tadresse' => 'adresse',
-    'tcontact' => 'contact',
+    'ttel' => 'tel',
     'tfax' => 'fax',
     'temail' => 'email',
     'tsiege' => 'siege',
 );
 
-$req = $DB->prepare("INSERT INTO `societe` (`CODE_SOCIETE`, `LIBELLE_SOCIETE`, `COMPLEMENT_SOCIETE`, `ADRESSE_SOCIETE`, `TEL_SOCIETE`, `FAX_SOCIETE`, `EMAIL_SOCIETE`, `SIEGE`) VALUES (:tcode, :tlibelle, :tcomplement, :tadresse, :tcontact, :tfax, :temail, :tsiege);");
+$req = "INSERT INTO `societe` (`CODE_SOCIETE`, `LIBELLE_SOCIETE`, `COMPLEMENT_SOCIETE`, `ADRESSE_SOCIETE`, `TEL_SOCIETE`, `FAX_SOCIETE`, `EMAIL_SOCIETE`, `SIEGE`) VALUES (:tcode, :tdescription, :tcomplement, :tadresse, :ttel, :tfax, :temail, :tsiege)";
 
-$response = apiCreator($DB, $req, "create", $t);
+$response = apiCreator($DB, $req, "create", $t, false);
 
 // Audits
 AuditSystem($DB,  "Création", "Création de nouvelle société", $response);

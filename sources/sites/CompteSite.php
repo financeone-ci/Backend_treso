@@ -20,8 +20,7 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
         // récupérer la liste des utilisateur
         $sql1 = "SELECT ID_COMPTE as id, CODE_COMPTE, LIBELLE_COMPTE 
                 FROM compte 
-                        JOIN banque ON compte.IDBANQUE = banque.IDBANQUE
-                WHERE banque.ID_SOCIETE = '$societe'";
+                WHERE compte.ID_SOCIETE = '$societe'";
         $req1 = $DB->query($sql1);
         $d1 = $req1->fetchAll(PDO::FETCH_OBJ);
         foreach ($d1 as $key) {

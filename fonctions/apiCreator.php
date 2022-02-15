@@ -39,6 +39,10 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
        // Lecture 
         if($type == "read")
         {
+            if($societe ==true ){
+                $requete.= " WHERE ID_SOCIETE = $soci";
+            }
+            
             $req = $DB->query($requete);
             $data = $req->fetchAll(PDO::FETCH_OBJ);
             $req->closeCursor();
@@ -46,6 +50,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                 "reponse" => "success",
                 "infos" => $data,
                 "payload" => $payload,
+               
             ]; 
         }
         else{
@@ -101,35 +106,56 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
                 if($type == "update" OR  $type == "delete" ){
                     $payload->item_id = strval($donneesSecurisees['tid']);
                 }else{
-                    $payload->item_id = '0';
+                     $payload->item_id = 0;
                 }
-                $MYSQL_DUPLICATE_CODES=array(1062, 23000);
-                if (in_array($e->getCode(),$MYSQL_DUPLICATE_CODES)) {
-                    // doublon
-                    if($e->getCode() == 1062){
-                        $infoHttp = [
+                // code déjà utilisé
+                if(strpos($e->getMessage(), "1062" )){
+                    return json_encode([
                             "reponse" => "error",
                             "message" => "Code déjà utilisé",
                             "payload" => $payload,
                             "data" => $tdata,
-                        ];
-                    }else{
+                        ], JSON_UNESCAPED_UNICODE);
+                }
+                // supprimer clé étrangère
+                elseif(strpos($e->getMessage(), "1451" )){
+                    return json_encode([
+                            "reponse" => "error",
+                            "message" => "Impossible de supprimer",
+                            "payload" => $payload,
+                            "data" => $tdata,
+                        ], JSON_UNESCAPED_UNICODE);
+                }
+                else{
+                    $MYSQL_DUPLICATE_CODES=array(1062, 23000);
+                    if (in_array($e->getCode(),$MYSQL_DUPLICATE_CODES)) {
+                        // doublon
+                        if($e->getCode() == 1062){
+                            $infoHttp = [
+                                "reponse" => "error",
+                                "message" => "Code déjà utilisé",
+                                "payload" => $payload,
+                                "data" => $tdata,
+                            ];
+                        }else{
+                            $infoHttp = [
+                                "reponse" => "error",
+                                "message" => "Suppression impossible".$e->getMessage(),
+                                "payload" => $payload,
+                                "data" => $tdata,
+                            ];
+                        }
+                    } else {
+                        // an error other than duplicate entry occurred
                         $infoHttp = [
                             "reponse" => "error",
-                            "message" => "Suppression impossible",
+                            "message" => $e->getMessage(),
                             "payload" => $payload,
                             "data" => $tdata,
                         ];
-                    }
-                } else {
-                    // an error other than duplicate entry occurred
-                    $infoHttp = [
-                        "reponse" => "error",
-                        "message" => $e->getMessage(),
-                        "payload" => $payload,
-                        "data" => $tdata,
-                    ];
+                    }  
                 }
+                
             }
         }
     }else{
