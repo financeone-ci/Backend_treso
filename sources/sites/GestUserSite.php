@@ -6,6 +6,8 @@ require_once '../../fonctions/getToken.php';
 
 $infoHttp = array();
 $header = apache_request_headers();
+$action = "";
+$description = "";
 
 if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true)
 {
@@ -28,6 +30,14 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
                 );
                 $req = $DB->prepare("INSERT INTO site_user(ID_USER, ID_SITE) values(:user, :site)");
                 $req->execute($t);
+                $action = "Ajout";
+                $description = "Ajout utilisateur ".$user." au site ".$site;
+                $infoHttp = [
+                    "reponse" => "success",
+                    "message" => "user ajouté avec succès",
+                    "payload" => $payload,
+                    "data" => "Site: ".$site." User: ".$user,
+                ];
                 break;
             case 1:
                 # Cas de suppression d'utilisateur au site
@@ -37,12 +47,22 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
                 );
                 $req = $DB->prepare("DELETE FROM site_user WHERE ID_USER = :user AND ID_SITE = :site");
                 $req->execute($t);
+                $action = "Suppression";
+                $description = "Suppression utilisateur ".$user." au site ".$site;
+                $infoHttp = [
+                    "reponse" => "success",
+                    "message" => "user supprimé avec succès",
+                    "payload" => $payload,
+                    "data" => "Site: ".$site." User: ".$user,
+                ];
                 break;
             default:
                 # Autres cas
                 $infoHttp = [
                     "reponse" => "error",
                     "message" => "Action inconnue",
+                    "payload" => $payload,
+                    "data" => "Site: ".$site." User: ".$user,
                 ]; 
                 break;
         }
@@ -50,6 +70,8 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
         $infoHttp = [
             "reponse" => "error",
             "message" => "paramètres incorrects",
+            "payload" => $payload,
+            "data" => "",
         ]; 
     }
 }else{
@@ -58,4 +80,9 @@ if(isset($header['Authorization']) && ChekToken($header['Authorization']) == tru
         "message" => "Accès refusé",
     ]; 
 }
-echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
+$response = json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
+
+// Audit
+AuditSystem($DB, $action, $description, $response);
+
+echo $response;

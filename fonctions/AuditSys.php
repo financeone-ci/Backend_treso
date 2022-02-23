@@ -1,15 +1,23 @@
 <?php
 // Audit d'utlisation du logiciel
-function AuditSystem($BDD, $action, $description, $reponseRequete ){
+function AuditSystem($BDD, $action, $description, $reponseRequete="" )
+{
     $issue = json_decode($reponseRequete); 
     $response = false;
+<<<<<<< HEAD
     if(isset($issue->data)){
+=======
+    // $data =  "";
+    if($issue->data)
+    {
+>>>>>>> f1154d0f99c8bd89c09c34f3a223923108e48705
         // récupération des données utilisateur depuis $reponseRequete
         $data = $issue->data;
         $login = $issue->payload->user_login;
         $itemID = $issue->payload->item_id;
         $userID = $issue->payload->user_id;
         $societe = $issue->payload->user_societe;
+
         // conversion du tableaux des nouvelles valeurs en chaine
         $implode = "";
         foreach ($data as $key => $value) {
@@ -18,14 +26,13 @@ function AuditSystem($BDD, $action, $description, $reponseRequete ){
         }
         $data = $implode;
         if($issue->reponse === "error")
-    {
-        $issue_ = 'Echec';
-    }elseif($issue->reponse === "success")
-    {
-        $issue_ = 'succès';
-    }
+        {
+            $issue_ = 'Echec';
+        }elseif($issue->reponse === "success")
+        {
+            $issue_ = 'succès';
+        }
 
-       
         $t = array(
             'tuserID' => $userID,
             'tlogin' => $login,
@@ -48,12 +55,6 @@ function AuditSystem($BDD, $action, $description, $reponseRequete ){
             $response = $e->getMessage();
             file_put_contents("log-".$issue_.date("d-m-y").'.txt', $description . " // ".$response);
         }
-
-
     }
-
-    
-    
-
     return $response;
 }

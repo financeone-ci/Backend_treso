@@ -17,6 +17,6 @@ $sql = "UPDATE sites
 $response = apiCreator($DB, $sql, "update", $t, false);
 
 // Audits
-AuditSystem($DB, "Mise à jour site", "Mise à jour de  site", $response);
+AuditSystem($DB, "Modification", "Modification de site", $response);
 
 echo $response;

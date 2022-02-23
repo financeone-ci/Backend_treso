@@ -15,5 +15,6 @@ $req =  "INSERT INTO sites(CODE_SITE, DESCRIPTION_SITE, REPRESENTANT_SITE, LOCAL
 $response = apiCreator($DB, $req, "create", $t, true);
 
 // Audits
-AuditSystem($DB,  "Création site", "Création de nouveau site", $reponse); 
+AuditSystem($DB,  "Création", "Création de nouveau site", $response); 
+
 echo $response;

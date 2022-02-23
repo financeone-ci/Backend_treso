@@ -10,5 +10,5 @@ $req =  "DELETE FROM `sites` WHERE `sites`.`ID_SITE` = :tid" ;
 $response = apiCreator($DB, $req, "delete", $t, false);
 
 // Audits
-AuditSystem($DB, "Suppression site", "Suppression de site", $response);
+AuditSystem($DB, "Suppression", "Suppression de site", $response);
 echo $response;
