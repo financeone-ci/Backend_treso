@@ -3,7 +3,7 @@
 function AuditSystem($BDD, $action, $description, $reponseRequete ){
     $issue = json_decode($reponseRequete); 
     $response = false;
-    if($issue->data){
+    if(isset($issue->data)){
         // récupération des données utilisateur depuis $reponseRequete
         $data = $issue->data;
         $login = $issue->payload->user_login;

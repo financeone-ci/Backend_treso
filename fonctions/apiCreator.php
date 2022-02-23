@@ -3,7 +3,9 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
     $infoHttp = [ // reponse 
         "reponse" => "error",
         "message" => "...",
+        "data" => [],
     ];
+    $data = [];
     $msg = "Enregistré avec succès";
     $header = apache_request_headers(); // autorisation 
     $obj = json_decode(file_get_contents('php://input')); 
