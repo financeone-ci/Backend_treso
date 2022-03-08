@@ -33,7 +33,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                         'approuver' => 0,
                     );
                     $req1 = $DB->prepare("INSERT INTO securite (securite_id, securite_taille, securite_majuscule, securite_carc_speciaux, securite_chiffres, securite_duree_pwd, valider, autoriser, approuver)
-                                                    VALUES (:id, :taille, :maj, :carac, :chiffre, :duree)");
+                    VALUES (:id, :taille, :maj, :carac, :chiffre, :duree)");
                     if($req1->execute($t1))
                     {
                         // Relecture des paramètres de cnx
