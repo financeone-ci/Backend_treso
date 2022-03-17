@@ -121,7 +121,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
             'tdescription' => "",
             'tissue' => "1",
                       );
-  audit_sys($t2, $tnew,$jeton);
+  // audit_sys($t2, $tnew,$jeton);
      ///////////// Audit système ///////////////////
                         $infoHttp = [
                         "reponse" => "success",
@@ -158,7 +158,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
             'tdescription' => "",
             'tissue' => "0",
                       );
-        audit_sys($t2, $tnew,$jeton);
+        // audit_sys($t2, $tnew,$jeton);
          ///////////// Audit système ///////////////////
             }
                 
@@ -321,7 +321,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                          'tdescription' => "Modification de la saisie",
                           'tissue' => "1",
                       );
-                    audit_sys($t2, $tnew,$jeton);
+                    // audit_sys($t2, $tnew,$jeton);
                      
                         // cas où la requête s'est bien exécutée
                         $infoHttp = [
@@ -356,7 +356,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
             'tdescription' => "Modification de la saisie",
             'tissue' => "0",
                       );
-        audit_sys($t2, $tnew,$jeton);
+        // audit_sys($t2, $tnew,$jeton);
         $infoHttp = [
                         "reponse" => "error",
                         "message" => "Connexion aux données impossible, veuillez vérifier votre connexion.",
@@ -393,7 +393,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                     'tdescription' => "",
                     'tissue' => "1",
                             );
-                audit_sys($t2, $tnew,$jeton);
+                // audit_sys($t2, $tnew,$jeton);
                   
                 // cas où la requête s'est bien exécutée
                     $infoHttp = [
@@ -417,7 +417,7 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
             'tdescription' => "",
             'tissue' => "0",
                       );
-  audit_sys($t2, $tnew,$jeton);                
+  // audit_sys($t2, $tnew,$jeton);                
       $infoHttp = [
                         "reponse" => "error",
                         "message" => "Connexion aux données impossible, veuillez vérifier votre connexion.",
@@ -447,6 +447,3 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
 }
 
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
-
-
-

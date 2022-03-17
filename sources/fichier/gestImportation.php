@@ -84,7 +84,7 @@ if(isset($_GET['type']) && !empty($_GET['type']))
                         'tdescription' => "",
                         'tissue' => "1",
                     );
-                    audit_sys($t2, $tnew,$jeton);
+                  //  audit_sys($t2, $tnew,$jeton);
                     ///////////// Audit système ///////////////////
 
                     // cas où la requête s'est bien exécutée
@@ -106,7 +106,7 @@ if(isset($_GET['type']) && !empty($_GET['type']))
                         'tdescription' => "",
                         'tissue' => "0",
                     );
-                    audit_sys($t2, $tnew, $jeton);
+                 //   audit_sys($t2, $tnew, $jeton);
 
                     $MYSQL_DUPLICATE_CODES=array(1062, 23000);
                     if (in_array($e->getCode(),$MYSQL_DUPLICATE_CODES))

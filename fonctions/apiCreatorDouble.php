@@ -1,5 +1,5 @@
 <?php 
-function apiCreator($DB, string $requete, string $type="read", array $donnees = [], $societe = true, $where = false /* crée une API et recupère la réponse */ ){
+function apiCreatorDouble($DB, string $requete, string $requete2, $cleEtrangere ="", string $type="read", array $donnees = [], $societe = true /* crée une API et recupère la réponse */ ){
     $infoHttp = [ // reponse 
         "reponse" => "error",
         "message" => "...",
@@ -13,8 +13,7 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
         $obj = $obj->values;
     } 
     
-    // if(1==1){
-     if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true){
+    if(isset($header['Authorization']) && ChekToken($header['Authorization']) == true){
         // Récupération de la société
         $jeton = $header['Authorization'];
         $payload = tokenData($jeton);
@@ -42,15 +41,18 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
        // Lecture 
         if($type == "read")
         {
-            if($societe ==true ){// cas où la societe est active
-                if($where){ // cas où la requete contient une clause WHERE  
-                  $requete.= " AND ID_SOCIETE = $soci";  
-                }else // cas où la requete ne contient pas de clause WHERE
-                    $requete.= " WHERE ID_SOCIETE = $soci";
+            if($societe ==true ){
+                $requete.= " WHERE ID_SOCIETE = $soci";
             }
             
             $req = $DB->query($requete);
             $data = $req->fetchAll(PDO::FETCH_OBJ);
+            
+            foreach ($data as $key => $value) {
+                $cle = $value->id;
+                $req2 = $DB->query($requete2." WHERE `$cleEtrangere` =  '$cle'");
+                $data[$key]->donneesSup =  $req2->fetchAll(PDO::FETCH_OBJ);
+            }
             $req->closeCursor();
             $infoHttp = [
                 "reponse" => "success",
@@ -95,6 +97,16 @@ function apiCreator($DB, string $requete, string $type="read", array $donnees = 
             $tdata = $donneesSecurisees;
             // traitement création, mise à jour , suppression //
             try{
+                // exécution de requete 2
+                if($DB->exec($requete2)){}
+                else {
+                 return [
+                    "reponse" => "error",
+                    "message" => "Opération impossible",
+                    "payload" => $payload,
+                    "data" => $tdata,
+                    ];  
+                }
                 $req = $DB->prepare($requete);
                 $req->execute($donneesSecurisees);
                 if($type == "update" OR  $type == "delete" ){
