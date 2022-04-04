@@ -102,7 +102,6 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
                         'tcontact' => $contact,
                         'tgestionnaire' => $gestionnaire,
                         'tadresse_web' => $adresse_web,
-
                     );
 
                     $t2 = array( // tableau des paramètres à enregistrer dans l'audit
@@ -372,4 +371,3 @@ if(isset($_GET['type']) && !empty($_GET['type'])){
 echo json_encode($infoHttp, JSON_UNESCAPED_UNICODE);
 
 ?>
-

@@ -1,6 +1,6 @@
 <?php
 // Audit de connexion et de déconnexion à l'application
-function AuditConnexion($BDD, $userID, $login, $action, $issue = 'succès', $description, $societe){
+function AuditConnexion($BDD, $userID, $login, $action, $issue = 1, $description, $societe){
     $response = false;
     $t = array(
         'tuserID' => $userID,
